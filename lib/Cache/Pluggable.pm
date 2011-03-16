@@ -9,21 +9,95 @@ __END__
 
 =head1 NAME
 
-Cache::Pluggable -
+Cache::Pluggable - pluggable cache interface
 
 =head1 SYNOPSIS
 
+  package Proj::Cache;
   use Cache::Pluggable;
+  Cache::Pluggable->load_plugins(qw/ SafeKey +Proj::Cache::Plugin::GetCallback /);
+
+  package main;
+  use strict;
+  use warnings;
+  use Cache::Memcached::Fast;
+
+  my $cache = Proj::Cache->new(
+    cache => Cache::Memcached::Fast->new(
+        servers => [{ address => 'localhost:11211', weight => 1 }],
+        namespace => 'proj:',
+    ),
+  );
+  my $value = $cache->get($key);
+  $cache->set(foo => $value, $expire);
 
 =head1 DESCRIPTION
 
-Cache::Pluggable is
+You would like to wrap CPAN's Cache::XXX libraries a bit.
+This library help you to write some modules and reuse it.
+
+=head1 METHODS
+
+=over
+
+=item Cache::Pluggable->load_plugins(@plugins);
+
+Load plugins and modify methods in order of @plugins.
+Order may be important for some plugin.
+
+=item my $cache = Proj::Cache->new(%args);
+
+=item my $value = $cache->get($hash_ref);
+
+yet anothor get interface for extend get interface. (recommend)
+
+$hash_ref are followings:
+
+=over 4
+
+=item key: Str ( required )
+
+    key name to get.
+
+=back
+
+=item my $value = $cache->get($key);
+
+many Cache:: library has this interface. 
+But, It's hard to extend. So, $hash_ref is recommend.
+
+=item $cache->set($hash_ref);
+
+$hash_ref is followings:
+
+=over 4
+
+=item key: Str ( required )
+
+=item value: Str ( required )
+
+=item expires_in ( optional )
+
+expires_in in N seconds.
+
+=back
+
+=item $cache->set($key, $value, $expire);
+
+many Cache:: library has this intercace.
+But, It's hard to extend. So, $hash_ref is recommend.
+
+=back
 
 =head1 AUTHOR
 
 Keiji Yoshimi E<lt>walf443 at gmail dot comE<gt>
 
 =head1 SEE ALSO
+
++<CLI>
+
++<Cache::Cache>
 
 =head1 LICENSE
 
