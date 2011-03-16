@@ -15,14 +15,16 @@ sub get {
     if ( ref $_[0] eq 'HASH' ) {
         return $self->_get_hashref(@_);
     } else {
-        return $self->_get(@_);
+        my $key = shift;
+        return $self->_get_hashref({ key => $key }, @_);
     }
 }
 
 sub _get_hashref {
-    my ($self, $hash_ref) = @_;
+    my $self = shift;
+    my $hash_ref = shift;
     my %hash = %$hash_ref; # copy
-    return $self->_get($hash{key});
+    return $self->_get($hash{key}, @_);
 }
 
 sub _get {
@@ -35,14 +37,22 @@ sub set {
     if ( ref $_[0] eq 'HASH' ) {
         return $self->_set_hashref(@_);
     } else {
-        return $self->_set(@_);
+        my $key = shift;
+        my $value = shift;
+        my $expires_in = shift;
+        return $self->_set_hashref({
+            key => $key || undef,
+            value => $value || undef,
+            expires_in => $expires_in || undef,
+        }, @_);
     }
 }
 
 sub _set_hashref {
-    my ($self, $hash_ref) = @_;
+    my $self = shift;
+    my $hash_ref = shift;
     my %hash = %$hash_ref; # copy
-    return $self->_set($hash{key}, $hash{value}, $hash{expires_in} || undef);
+    return $self->_set($hash{key}, $hash{value}, $hash{expires_in} || undef, @_);
 }
 
 sub _set {
