@@ -1,8 +1,54 @@
 package Cache::Pluggable;
-
 use strict;
 use warnings;
 our $VERSION = '0.01';
+use Class::Load qw();
+use Class::Accessor::Lite (
+    new => 1,
+    rw => [qw(
+        cache
+    )],
+);
+
+sub get {
+    my $self = shift;
+    if ( ref $_[0] eq 'HASH' ) {
+        return $self->_get_hashref(@_);
+    } else {
+        return $self->_get(@_);
+    }
+}
+
+sub _get_hashref {
+    my ($self, $hash_ref) = @_;
+    my %hash = %$hash_ref; # copy
+    return $self->_get($hash{key});
+}
+
+sub _get {
+    my $self = shift;
+    $self->cache->get(@_);
+}
+
+sub set {
+    my $self = shift;
+    if ( ref $_[0] eq 'HASH' ) {
+        return $self->_set_hashref(@_);
+    } else {
+        return $self->_set(@_);
+    }
+}
+
+sub _set_hashref {
+    my ($self, $hash_ref) = @_;
+    my %hash = %$hash_ref; # copy
+    return $self->_set($hash{key}, $hash{value}, $hash{expires_in} || undef);
+}
+
+sub _set {
+    my $self = shift;
+    $self->cache->set(@_);
+}
 
 1;
 __END__
@@ -14,8 +60,8 @@ Cache::Pluggable - pluggable cache interface
 =head1 SYNOPSIS
 
   package Proj::Cache;
-  use Cache::Pluggable;
-  Cache::Pluggable->load_plugins(qw/ SafeKey +Proj::Cache::Plugin::GetCallback /);
+  use parent 'Cache::Pluggable';
+  __PACKAGE__->load_plugins(qw/ SafeKey +Proj::Cache::Plugin::GetCallback /);
 
   package main;
   use strict;
