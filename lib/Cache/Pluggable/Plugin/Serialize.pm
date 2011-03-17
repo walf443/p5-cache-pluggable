@@ -26,6 +26,7 @@ no Mouse::Role;
 
 1;
 
+__END__
 =head1 NAME
 
 Cache::Pluggable::Role::Namespace - added namespace to key.
