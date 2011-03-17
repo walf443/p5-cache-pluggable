@@ -47,7 +47,7 @@ my $code = sub {
 {
     my $value = $cache->get_callback({
         key => "hoge",
-        expire_in => 10,
+        expires_in => 10,
     } => $code);
     is($value, "hogehogehoge", "get_callback should return callback result");
     is($counter, 1, "callback should be called");
@@ -58,7 +58,7 @@ my $code = sub {
 {
     my $value = $cache->get_callback({
         key => "hoge",
-        expire_in => 10,
+        expires_in => 10,
     } => $code);
     is($value, "hogehogehoge", "get_callback should return callback result");
     is($counter, 1, "callback should not be called because value can get");

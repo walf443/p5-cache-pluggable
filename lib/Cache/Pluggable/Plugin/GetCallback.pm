@@ -44,7 +44,7 @@ Cache::Pluggable::Plugin::GetCallback - add get_callback interface
   );
   my $value = $cache->get_callback({
      key => $key,
-     expire_in => 10, # sec
+     expires_in => 10, # sec
   } => sub {
       # do heavy task.
       my $value = $key x 3;
@@ -67,7 +67,7 @@ $hash_ref is followings:
 
 key to get and set.
 
-=item expire_in: Int ( optional )
+=item expires_in: Int ( optional )
 
 expire in N sec.
 
