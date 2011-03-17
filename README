@@ -21,8 +21,8 @@ SYNOPSIS
             namespace => 'proj:',
         ),
       );
-      my $value = $cache->get($key);
-      $cache->set(foo => $value, $expire);
+      my $value = $cache->get({ key => $key });
+      $cache->set(key => $key, value => $value, expires_in => 60);
 
 DESCRIPTION
     You would like to wrap CPAN's Cache::XXX libraries a bit. This library
@@ -51,7 +51,7 @@ METHODS
 
         key: Str ( required )
         value: Str ( required )
-        expires_in ( optional )
+        expires_in: Int ( optional )
             expires_in in N seconds.
 
     $cache->set($key, $value, $expire);

@@ -93,8 +93,8 @@ Cache::Pluggable - pluggable cache interface
         namespace => 'proj:',
     ),
   );
-  my $value = $cache->get($key);
-  $cache->set(foo => $value, $expire);
+  my $value = $cache->get({ key => $key });
+  $cache->set(key => $key, value => $value, expires_in => 60);
 
 =head1 DESCRIPTION
 
@@ -141,7 +141,7 @@ $hash_ref is followings:
 
 =item value: Str ( required )
 
-=item expires_in ( optional )
+=item expires_in: Int ( optional )
 
 expires_in in N seconds.
 
