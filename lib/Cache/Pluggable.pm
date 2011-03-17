@@ -7,6 +7,9 @@ has 'cache' => (
     is => 'rw',
 );
 
+__PACKAGE__->meta->make_immutable;
+no Mouse;
+
 sub get {
     my $self = shift;
     if ( ref $_[0] eq 'HASH' ) {
