@@ -21,7 +21,7 @@ __END__
 
 =head1 NAME
 
-Cache::Pluggable::Role::Namespace - added namespace to key.
+Cache::Pluggable::Plugin::Namespace - added namespace to key.
 
 =head1 SYNOPSIS
 
@@ -42,7 +42,6 @@ Cache::Pluggable::Role::Namespace - added namespace to key.
     namespace => "proj",
     cache => Cache::Memcached::Fast->new(
         servers => [{ address => 'localhost:11211', weight => 1 }],
-        namespace => 'proj:',
     ),
   );
   my $value = $cache->get($key); # "GET proj:$key"
