@@ -62,4 +62,11 @@ subtest 'set interface' => sub {
     };
 };
 
+subtest 'key_filter interface' => sub {
+    subtest 'default key_filter' => sub {
+        my $val = $cache->key_filter("foo");
+        is($val, "foo", "should be same as argument");
+    };
+};
+
 done_testing();
