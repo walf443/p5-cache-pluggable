@@ -3,8 +3,12 @@ NAME
 
 SYNOPSIS
       package Proj::Cache;
-      use parent 'Cache::Pluggable';
-      __PACKAGE__->load_plugins(qw/ SafeKey +Proj::Cache::Plugin::GetCallback /);
+      use Mouse;
+      extends 'Cache::Pluggable';
+
+      with qw(Cache::Pluggable::Plugin::Namespace);
+
+      __PACKAGE__->meta->make_immutable();
 
       package main;
       use strict;

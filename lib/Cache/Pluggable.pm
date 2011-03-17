@@ -1,13 +1,10 @@
 package Cache::Pluggable;
-use strict;
-use warnings;
-our $VERSION = '0.01';
+use Mouse;
 use Class::Load qw();
-use Class::Accessor::Lite (
-    new => 1,
-    rw => [qw(
-        cache
-    )],
+our $VERSION = '0.01';
+
+has 'cache' => (
+    is => 'rw',
 );
 
 sub get {
@@ -20,11 +17,16 @@ sub get {
     }
 }
 
+sub key_filter {
+    my (undef, $key) = @_;
+    return $key;
+}
+
 sub _get_hashref {
     my $self = shift;
     my $hash_ref = shift;
     my %hash = %$hash_ref; # copy
-    return $self->_get($hash{key}, @_);
+    return $self->_get($self->key_filter($hash{key}), @_);
 }
 
 sub _get {
@@ -52,7 +54,7 @@ sub _set_hashref {
     my $self = shift;
     my $hash_ref = shift;
     my %hash = %$hash_ref; # copy
-    return $self->_set($hash{key}, $hash{value}, $hash{expires_in} || undef, @_);
+    return $self->_set($self->key_filter($hash{key}), $hash{value}, $hash{expires_in} || undef, @_);
 }
 
 sub _set {
@@ -70,8 +72,12 @@ Cache::Pluggable - pluggable cache interface
 =head1 SYNOPSIS
 
   package Proj::Cache;
-  use parent 'Cache::Pluggable';
-  __PACKAGE__->load_plugins(qw/ SafeKey +Proj::Cache::Plugin::GetCallback /);
+  use Mouse;
+  extends 'Cache::Pluggable';
+
+  with qw(Cache::Pluggable::Plugin::Namespace);
+
+  __PACKAGE__->meta->make_immutable();
 
   package main;
   use strict;
