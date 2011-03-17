@@ -48,7 +48,6 @@ Cache::Pluggable::Role::Namespace - added namespace to key.
   my $cache = Proj::Cache->new(
     cache => Cache::Memcached::Fast->new(
         servers => [{ address => 'localhost:11211', weight => 1 }],
-        namespace => 'proj:',
     ),
     serialize_methods => [ sub { JSON::XS->new->utf8->encode(shift) }, sub { JSON::XS->new->utf8->decode(shift) } ],
   );
@@ -57,9 +56,9 @@ Cache::Pluggable::Role::Namespace - added namespace to key.
 
 =head1 DESCRIPTION
 
-This plugin always append namespace to key.
-
-It's useful to share cache storages between many projects.
+This plugin for serializing data to storage.
+Cache::Memcached::Fast support serializing data by Storable as default.
+But some Cache library don't support serialization.
 
 =head1 AUTHOR
 
