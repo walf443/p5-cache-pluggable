@@ -105,12 +105,17 @@ This library help you to write some modules and reuse it.
 
 =over
 
-=item Cache::Pluggable->load_plugins(@plugins);
-
-Load plugins and modify methods in order of @plugins.
-Order may be important for some plugin.
-
 =item my $cache = Proj::Cache->new(%args);
+
+%args is followings:
+
+=over 4
+
+=item cache: Object ( required )
+
+Cache::xxx object like Cache::Memcached::Fast.
+
+=back
 
 =item my $value = $cache->get($hash_ref);
 

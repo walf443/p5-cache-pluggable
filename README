@@ -29,11 +29,12 @@ DESCRIPTION
     help you to write some modules and reuse it.
 
 METHODS
-    Cache::Pluggable->load_plugins(@plugins);
-        Load plugins and modify methods in order of @plugins. Order may be
-        important for some plugin.
-
     my $cache = Proj::Cache->new(%args);
+        %args is followings:
+
+        cache: Object ( required )
+            Cache::xxx object like Cache::Memcached::Fast.
+
     my $value = $cache->get($hash_ref);
         yet anothor get interface for extend get interface. (recommend)
 
