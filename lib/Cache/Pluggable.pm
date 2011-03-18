@@ -159,6 +159,11 @@ But, It's hard to extend. So, $hash_ref is recommend.
 
 =back
 
+=head1 TESTED cache module.
+
+Cahce::Pluggable work with followings:
++<Cahce::Memcached::Fast>
+
 =head1 AUTHOR
 
 Keiji Yoshimi E<lt>walf443 at gmail dot comE<gt>
