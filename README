@@ -59,6 +59,9 @@ METHODS
         many Cache:: library has this intercace. But, It's hard to extend.
         So, $hash_ref is recommend.
 
+TESTED cache module.
+    Cahce::Pluggable work with followings: +<Cahce::Memcached::Fast>
+
 AUTHOR
     Keiji Yoshimi <walf443 at gmail dot com>
 

@@ -4,6 +4,10 @@ use Mouse::Role;
 has 'serialize_methods' => (
     is => 'ro',
     isa => 'ArrayRef[CodeRef]',
+    default => sub { [
+        sub { JSON::XS->new->utf8->encode(shift) },
+        sub { JSON::XS->new->utf8->decode(shift) },
+    ] },
 );
 
 around '_get' => sub {
