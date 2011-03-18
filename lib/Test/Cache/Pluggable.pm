@@ -1,7 +1,7 @@
 package Test::Cache::Pluggable;
 use Mouse;
 use Test::More;
-use Test::Differences;
+use Test::Differences qw/eq_or_diff/;
 use Data::Dumper;
 use Proc::Guard qw();
 use Test::TCP qw();
