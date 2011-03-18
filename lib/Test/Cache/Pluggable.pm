@@ -42,37 +42,41 @@ sub guard_memcached {
 }
 
 sub run {
-    my ($self, $hashref) = @_;
+    my ($self, $hashref, $test_name) = @_;
 
-    subtest 'set/get testing' => sub {
-        subtest 'hashref interface' => sub {
-            lives_ok(sub {
-                $self->cache->set($hashref);
-            }, 'set ok');
+    $test_name ||= "Test::Cache::Pluggable#run";
 
-            my $value;
-            lives_ok(sub {
-                $value = $self->cache->get($hashref);
-            }, 'get ok');
+    subtest $test_name => sub {
+        subtest 'set/get testing' => sub {
+            subtest 'hashref interface' => sub {
+                lives_ok(sub {
+                    $self->cache->set($hashref);
+                }, 'set ok');
 
-            eq_or_diff($value, $hashref->{value}, "get/set ok")
-                or Dumper($value);
+                my $value;
+                lives_ok(sub {
+                    $value = $self->cache->get($hashref);
+                }, 'get ok');
 
-        };
+                eq_or_diff($value, $hashref->{value}, "get/set ok")
+                    or Dumper($value);
 
-        subtest 'key interface' => sub {
-            lives_ok(sub {
-                my $val = $self->cache->set($hashref->{key} => $hashref->{value});
-            }, 'set ok');
+            };
 
-            my $value;
-            lives_ok(sub {
-                $value = $self->cache->get($hashref->{key});
-            }, 'get ok');
+            subtest 'key interface' => sub {
+                lives_ok(sub {
+                    my $val = $self->cache->set($hashref->{key} => $hashref->{value});
+                }, 'set ok');
 
-            eq_or_diff($value, $hashref->{value}, "get/set ok")
-                or Dumper($value);
+                my $value;
+                lives_ok(sub {
+                    $value = $self->cache->get($hashref->{key});
+                }, 'get ok');
 
+                eq_or_diff($value, $hashref->{value}, "get/set ok")
+                    or Dumper($value);
+
+            };
         };
     };
 
