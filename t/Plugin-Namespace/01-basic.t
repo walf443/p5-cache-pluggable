@@ -9,26 +9,10 @@ use strict;
 use warnings;
 use Test::More;
 use Cache::Pluggable;
-use Proc::Guard;
-use Test::TCP qw/empty_port wait_port/;
-use File::Which qw/which/;
+use Test::Cache::Pluggable;
 use Cache::Memcached::Fast;
-use Try::Tiny;
 
-sub lives_ok {
-    my ($cb, $msg) = @_;
-
-    my $error;
-    try { $cb->() } catch {
-        $error = $_;
-    };
-    ok(! defined $error, $msg);
-}
-
-my $port = empty_port();
-my $proc = proc_guard(scalar(which('memcached')), '-p', $port);
-wait_port($port);
-
+my ($guard, $port) = Test::Cache::Pluggable->guard_memcached();
 my $memcache = Cache::Memcached::Fast->new({
     servers => [{ address => "localhost:$port" }],
 });
@@ -38,6 +22,10 @@ my $cache = t::Cache->new(
     namespace => 'namespace',
 );
 
+my $t = Test::Cache::Pluggable->new(
+    cache => $cache,
+);
+
 subtest 'key_filter interface' => sub {
     subtest 'default key_filter' => sub {
         my $val = $cache->key_filter("foo");
@@ -45,37 +33,7 @@ subtest 'key_filter interface' => sub {
     };
 };
 
-$memcache->set('namespace:hoge', 'fuga');
-
-subtest 'get interface' => sub {
-    subtest 'hashref interface' => sub {
-        lives_ok(sub {
-            my $val = $cache->get({ key => 'hoge' });
-            is($val, 'fuga', 'fetching value ok');
-        }, 'lives ok');
-    };
-
-    subtest 'key interface' => sub {
-        lives_ok(sub {
-            my $val = $cache->get('hoge');
-            is($val, 'fuga', 'fetching value ok');
-        }, 'lives ok');
-    };
-};
-
-subtest 'set interface' => sub {
-    subtest 'hashref interface' => sub {
-        lives_ok(sub {
-            $cache->set({ key => 'hoge', value => 'fuga'});
-        }, 'lives ok');
-    };
-
-    subtest 'key interface' => sub {
-        lives_ok(sub {
-            my $val = $cache->set('hoge' => 'fuga');
-        }, 'lives ok');
-    };
-};
+$t->run({ key => "hoge", value => "fuga" });
 
 done_testing();
 
