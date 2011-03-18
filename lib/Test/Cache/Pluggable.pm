@@ -25,20 +25,22 @@ sub lives_ok {
         or diag($error);
 }
 
-sub guard_memcached {
-    my ($class, $cb) = @_;
+sub guard_service {
+    my ($class, $cmd, @args) = @_;
 
     my $program = File::Which::which('memcached')
         or plan skip_all => q{This test require 'memcached'};
 
     my $port = Test::TCP::empty_port();
-    my $proc = Proc::Guard::proc_guard($program, '-p', $port, '-l', '127.0.0.1');
+    my $proc = Proc::Guard::proc_guard($program, map { $_ eq '$port' ? $port : $_ } @args);
     Test::TCP::wait_port($port);
 
-    if ( defined $cb ) {
-        $cb->($port);
-    }
     return ($proc, $port);
+}
+
+sub guard_memcached {
+    my ($class, ) = @_;
+    return $class->guard_service('memcached', '-l', '127.0.0.1', '-p', '$port');
 }
 
 sub run {
