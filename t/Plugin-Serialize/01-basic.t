@@ -13,6 +13,7 @@ use Cache::Pluggable;
 use Cache::Memcached::Fast;
 use JSON::XS;
 use Test::Cache::Pluggable;
+use Test::Differences qw/eq_or_diff/;
 
 my ($guard, $port) = Test::Cache::Pluggable->guard_memcached;
 
@@ -31,8 +32,18 @@ my $cache = t::Cache->new(
 );
 
 my $t = Test::Cache::Pluggable->new(cache => $cache);
-$t->run({ key => "foo", value => { foo => "bar" }});
-$t->run({ key => "foo", value => { "あいうえお" => "かきくけこ" }});
+
+subtest 'ascii' => sub {
+    $t->run({ key => "foo", value => { foo => "bar" }});
+    my $value = $memcache->get("foo");
+    eq_or_diff($serialize_methods->[1]->($value), { foo => "bar" }, "serialize ok");
+};
+
+subtest 'flagged utf8' => sub {
+    $t->run({ key => "foo", value => { "あいうえお" => "かきくけこ" }});
+    my $value = $memcache->get("foo");
+    eq_or_diff($serialize_methods->[1]->($value), { "あいうえお" => "かきくけこ" }, "serialize ok");
+};
 
 done_testing();
 
