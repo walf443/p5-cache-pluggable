@@ -9,28 +9,11 @@ use strict;
 use warnings;
 use Test::More;
 use Cache::Pluggable;
-use Proc::Guard;
-use Test::TCP qw/empty_port wait_port/;
-use File::Which qw/which/;
 use Cache::Memcached::Fast;
-use Try::Tiny;
+use Test::Cache::Pluggable;
 
-sub lives_ok {
-    my ($cb, $msg) = @_;
-
-    my $error;
-    try { $cb->() } catch {
-        $error = $_;
-    };
-    ok(! defined $error, $msg);
-}
-
-my $port1 = empty_port();
-my $proc1 = proc_guard(scalar(which('memcached')), '-p', $port1);
-wait_port($port1);
-my $port2 = empty_port();
-my $proc2 = proc_guard(scalar(which('memcached')), '-p', $port2);
-wait_port($port2);
+my ($guard1, $port1) = Test::Cache::Pluggable->guard_memcached;
+my ($guard2, $port2) = Test::Cache::Pluggable->guard_memcached;
 
 my $memcache1 = Cache::Memcached::Fast->new({
     servers => [{ address => "localhost:$port1" }],
@@ -45,23 +28,11 @@ my $cache = t::Cache->new(
     duplicate => [$memcache2],
 );
 
-subtest 'set interface' => sub {
-    subtest 'hashref interface' => sub {
-        lives_ok(sub {
-            $cache->set({ key => 'hoge', value => 'fuga'});
-        }, 'lives ok');
-        is($memcache1->get("hoge"), "fuga", "memcache1 get OK");
-        is($memcache2->get("hoge"), "fuga", "memcache2 get OK");
-    };
+my $t = Test::Cache::Pluggable->new(cache => $cache);
 
-    subtest 'key interface' => sub {
-        lives_ok(sub {
-            my $val = $cache->set('hoge' => 'fuga');
-        }, 'lives ok');
-        is($memcache1->get("hoge"), "fuga", "memcache1 get OK");
-        is($memcache2->get("hoge"), "fuga", "memcache2 get OK");
-    };
-};
+$t->run({ key => "hoge", value => "fuga" });
+is($memcache1->get("hoge"), "fuga", "memcache1 get OK");
+is($memcache2->get("hoge"), "fuga", "memcache2 get OK");
 
 done_testing();
 
