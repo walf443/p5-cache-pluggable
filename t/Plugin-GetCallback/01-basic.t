@@ -9,25 +9,10 @@ use strict;
 use warnings;
 use Test::More;
 use Cache::Pluggable;
-use Proc::Guard;
-use Test::TCP qw/empty_port wait_port/;
-use File::Which qw/which/;
+use Test::Cache::Pluggable;
 use Cache::Memcached::Fast;
-use Try::Tiny;
 
-sub lives_ok {
-    my ($cb, $msg) = @_;
-
-    my $error;
-    try { $cb->() } catch {
-        $error = $_;
-    };
-    ok(! defined $error, $msg);
-}
-
-my $port = empty_port();
-my $proc = proc_guard(scalar(which('memcached')), '-p', $port);
-wait_port($port);
+my ($guard, $port) = Test::Cache::Pluggable->guard_memcached;
 
 my $memcache = Cache::Memcached::Fast->new({
     servers => [{ address => "localhost:$port" }],
