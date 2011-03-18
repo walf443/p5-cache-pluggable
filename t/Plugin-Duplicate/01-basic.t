@@ -15,6 +15,7 @@ use Test::Cache::Pluggable;
 
 my ($guard1, $port1) = Test::Cache::Pluggable->guard_memcached;
 my ($guard2, $port2) = Test::Cache::Pluggable->guard_memcached;
+my ($guard3, $port3) = Test::Cache::Pluggable->guard_memcached;
 
 my $memcache1 = Cache::Memcached::Fast->new({
     servers => [{ address => "localhost:$port1" }],
@@ -24,7 +25,7 @@ my $memcache2 = Cache::Memcached::Fast->new({
     servers => [{ address => "localhost:$port2" }],
 });
 my $memcache3 = Cache::Memcached::Fast->new({
-    servers => [{ address => "localhost:$port2" }],
+    servers => [{ address => "localhost:$port3" }],
 });
 
 
