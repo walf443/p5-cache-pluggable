@@ -170,7 +170,7 @@ Keiji Yoshimi E<lt>walf443 at gmail dot comE<gt>
 
 =head1 SEE ALSO
 
-+<CLI>
++<CHI>
 
 +<Cache::Cache>
 
