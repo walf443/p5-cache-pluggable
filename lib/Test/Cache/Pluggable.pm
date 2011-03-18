@@ -32,7 +32,7 @@ sub guard_memcached {
         or plan skip_all => q{This test require 'memcached'};
 
     my $port = Test::TCP::empty_port();
-    my $proc = Proc::Guard::proc_guard($program, '-p', $port);
+    my $proc = Proc::Guard::proc_guard($program, '-p', $port, '-l', '127.0.0.1');
     Test::TCP::wait_port($port);
 
     if ( defined $cb ) {
