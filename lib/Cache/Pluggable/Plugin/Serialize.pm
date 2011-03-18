@@ -54,7 +54,7 @@ Cache::Pluggable::Role::Namespace - added namespace to key.
     cache => Cache::Memcached::Fast->new(
         servers => [{ address => 'localhost:11211', weight => 1 }],
     ),
-    serialize_methods => [ sub { JSON::XS->new->utf8->encode(shift) }, sub { JSON::XS->new->utf8->decode(shift) } ],
+    serialize_methods => [ sub { JSON::XS->new->utf8->encode(shift) }, sub { JSON::XS->new->utf8->decode(shift) } ], # it's default serializer.
   );
   my $value = $cache->get($key); # "GET proj:$key"
   $cache->set(foo => $value, $expire); # "SET proj:$key $value"
