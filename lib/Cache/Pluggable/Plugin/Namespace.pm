@@ -44,8 +44,12 @@ Cache::Pluggable::Plugin::Namespace - added namespace to key.
         servers => [{ address => 'localhost:11211', weight => 1 }],
     ),
   );
-  my $value = $cache->get($key); # "GET proj:$key"
-  $cache->set(foo => $value, $expire); # "SET proj:$key $value"
+  my $value = $cache->get({ key => $key }); # "GET proj:$key"
+  $cache->set({ 
+    key => 'foo',
+    value => $value, 
+    expire_in => $expire
+  }); # "SET proj:$key $value"
 
 =head1 DESCRIPTION
 
