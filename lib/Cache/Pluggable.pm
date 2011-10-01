@@ -57,7 +57,11 @@ sub _set_hashref {
     my $self = shift;
     my $hash_ref = shift;
     my %hash = %$hash_ref; # copy
-    return $self->_set($self->key_filter($hash{key}), $hash{value}, $hash{expires_in} || undef, @_);
+    if ( defined $hash{expires_in} ) {
+        return $self->_set($self->key_filter($hash{key}), $hash{value}, $hash{expires_in} , @_);
+    } else {
+        return $self->_set($self->key_filter($hash{key}), $hash{value}, @_);
+    }
 }
 
 sub _set {

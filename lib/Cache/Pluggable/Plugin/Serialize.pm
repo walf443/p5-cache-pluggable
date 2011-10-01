@@ -14,7 +14,11 @@ around '_get' => sub {
     my $orig = shift;
     my $self = shift;
     my $ret = $orig->($self, @_);
-    return $self->serialize_methods->[1]->($ret);
+    if ( $ret ) {
+        return $self->serialize_methods->[1]->($ret);
+    } else {
+        return $ret;
+    }
 };
 
 around '_set_hashref' => sub {
